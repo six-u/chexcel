@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Excel Data</title>
+</head>
+<body>
+  <input type="file" name="file" id="file">
+  <script src="./js/checkConfig.js"></script>
+  <script src="../dist/chexcel.js"></script>
+  <script>
+    let ipt = document.getElementById('file');
+    ipt.onchange= function(e){
+      CheckExcel(ipt.files[0],configObj)
+    }
+  </script>
+</body>
+</html>
