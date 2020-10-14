@@ -14,7 +14,7 @@
 #### 使用说明
 
 1.  通过chexcel(file,config)调用函数
-2.  chexcel.set(tips) 设置提示内容
+2.  chexcel.setTips(tips) 设置提示内容
 
 #### 参与贡献
 
