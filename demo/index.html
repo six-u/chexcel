@@ -7,12 +7,34 @@
 </head>
 <body>
   <input type="file" name="file" id="file">
+  <h2>校验结果</h2>
+  <div id="tips" class="tips">
+
+  </div>
   <script src="./js/checkConfig.js"></script>
-  <script src="../dist/chexcel.js"></script>
+  <script src="./js/chexcel.js"></script>
   <script>
     let ipt = document.getElementById('file');
+    let tipsDiv = document.getElementById('tips');
     ipt.onchange= function(e){
-      CheckExcel(ipt.files[0],configObj)
+      chexcel(ipt.files[0],configObj).then(result=>{
+        console.log(result)
+        showResult(result)
+      })
+    }
+
+    function showResult(result){
+      let sheets = Object.keys(result)
+      sheets.forEach(sheetName=>{
+        let h3 = document.createElement("h3")
+        h3.innerText=sheetName
+        tipsDiv.appendChild(h3)
+        result[sheetName].forEach(line=>{
+          let p = document.createElement("p")
+          p.innerText = `line:${line.line} Error:${line.tips.join(", ")}`
+          tipsDiv.appendChild(p)
+        })
+      })
     }
   </script>
 </body>

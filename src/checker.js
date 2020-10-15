@@ -5,19 +5,21 @@
  */
 import validate from "./validate";
 
-let checkResult = {};
 /**
  * 根据配置校验数据
  * @param {Map} excelMap 
  * @param {Object} configObj 
  */
 function checker(excelMap,configObj){
-  console.log("configObj:", configObj);
+  // console.log("configObj:", configObj);
+
+  let checkResult = {};
   for (let [sheetName, sheet] of excelMap){
     // console.log(sheetName, sheet);
     // console.log("configObj[" + sheetName + "]:", configObj[sheetName]);
-    checkSheet(sheetName, sheet, configObj[sheetName]);
+    checkResult[sheetName] = checkSheet(sheetName, sheet, configObj[sheetName]);
   }
+  // console.log("checkResult:", checkResult);
   return checkResult
 }
 
@@ -27,10 +29,12 @@ function checker(excelMap,configObj){
  * @param {Object} rules 
  */
 function checkSheet(sheetName, sheet, rules) {
-  checkResult[sheetName]=[]
+  let checkSheetResult = [];
   sheet.forEach((row, i) => {
-    checkResult[sheetName].push(checkRow(row, rules))
+    checkSheetResult.push(checkRow(row, rules));
   });
+  // console.log(checkSheetResult);
+  return checkSheetResult;
 }
 
 /**
@@ -41,10 +45,10 @@ function checkSheet(sheetName, sheet, rules) {
 function checkRow(row,rules) {
   // console.log("checkRow:", row, rules);
   let keys = Object.keys(row);
-  let resultList = new Array(keys.length).fill(false)
-  keys.forEach((column,i) => {
+  let resultList = {}
+  keys.forEach((column) => {
     // console.log(column);
-    resultList[i] = checkCell(
+    resultList[column.trim()] = checkCell(
       column.trim(),
       row[column.trim()],
       rules[column.trim()]
@@ -60,50 +64,52 @@ function checkRow(row,rules) {
  */
 function checkCell(column, cell, rule) {
   // console.log("column:", column, "cell:", cell, "rule:", rule);
-  let validateResult = []
+  let validateResult = {
+    validator: true,
+    required: true,
+    include: true,
+    pattern: true,
+    format: true,
+    length: true,
+    minLength: true,
+    maxLength: true,
+    min: true,
+    max: true,
+  };
 
-  // 初始化提示信息
-  validate.getTips()
+  // 初始化校验信息
+  validate.init();
 
+  // 存在自定义校验方法则单独处理，传入cell值，需返回validateResult对象
+  // TODO: 引入类型系统，使用typescript或者Flow
   if (rule.validator) {
-    if (rule.validator){
-      validateResult = rule.validator(cell)
-    }else{
-      throw new Error(
-        `The validator attribute of the verification rule of ${column} is not a function`
-      );
+    let resultObj = validate.validator(cell, rule.validator);
+    return { isValidator: true, validateResult: resultObj };
+  }
+
+  // 其他校验规则
+  let keys = [
+    "require",
+    "include",
+    "pattern",
+    "format",
+    "length",
+    "minLength",
+    "maxLength",
+    "min",
+    "max",
+  ];
+  keys.forEach((key) => {
+    if (rule[key]) {
+      validateResult[key] = validate[key](cell, rule[key]);
+      if (!validateResult[key]) {
+        return validateResult;
+      }
     }
-    return validateResult;
-  }
-  if (rule.format) {
-    //TODO: 常用校验定义
-  }
-  if (rule.required ?? rule.required) {
-    validateResult = validate.required(cell, rule.required);
-    return;
-  }
-  if (rule.include) {
-    
-  }
-  if (rule.pattern) {
-  }
-  if (rule.length) {
-  }
-  if (rule.minLength) {
-  }
-  if (rule.maxLength) {
-  }
-  if (rule.min) {
-  }
-  if (rule.max) {
-  }
+  });
+
+  return validateResult;
 }
-
-
-
-
-
-
 
 
 export default checker

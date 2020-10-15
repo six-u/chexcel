@@ -16,7 +16,7 @@ Software architecture description
 #### Instructions
 
 1.  Call the function through chexcel(file,config)
-2. chexcel.set(tips) set tips
+2. chexcel.setTips(tips) set tips
 
 #### Contribution
 
