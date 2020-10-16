@@ -68,16 +68,15 @@ function output(checkResult, configObj) {
     } else {
       let columnTips = [];
       Object.keys(columnCheck).forEach((rule) => {
-        if (!columnCheck[rule]) {
+        if (columnCheck[rule] === false) {
           let str = "";
           if (rule != "include") {
             str = column + baseTips[rule];
           } else {
             str =
               column +
-              baseTips[rule] +
-              configObj[sheetName][column][rule].join(",") +
-              "中";
+              baseTips[rule] + "< " +
+              configObj[sheetName][column][rule].join(", ")+" >";
           }
           columnTips.push(str);
         }
@@ -91,10 +90,10 @@ function output(checkResult, configObj) {
    * 获取错误提示信息
    */
   function getTips() {
-    if (window._chexcelTips) {
-      baseTips = window._chexcelTips;
-    } else if (globalThis._chexcelTips) {
-      baseTips = globalThis._chexcelTips;
+    if (window.__chexcelTips__) {
+      baseTips = window.__chexcelTips__;
+    } else if (globalThis.__chexcelTips__) {
+      baseTips = globalThis.__chexcelTips__;
     } else {
       baseTips = {
         required: "列为必传项",
@@ -105,7 +104,8 @@ function output(checkResult, configObj) {
         min: "列小于接受的最小值",
         max: "列超出接受的最大值",
         include: "列的值没有包含在",
-        format: "列正则验证不通过",
+        format: "列format验证不通过",
+        norepeat: "列重复",
       };
     }
   }

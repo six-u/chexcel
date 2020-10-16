@@ -4,7 +4,7 @@
  * Des: Obtain Excel file data and convert to JSON data
  */
 
-import XLSX from "xlsx";
+import XLSX from "xlsx/xlsx.mini.js";
 
 /**
  * 获取数据

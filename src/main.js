@@ -24,39 +24,47 @@
  * @param {file} file 
  * @param {Object} configObj 
  */
-function chexcel(file,configObj){
+function Chexcel(file,configObj){
   // TODO: 入参校验
+
   // if (!configObj|| Object.keys(configObj).legnth==0) {
   //   throw new Error(`configObj is required`);
   //   return
   // }
-  return getter(file).then(jsonMap=>{
-    let excelMap = jsonMap;
-    // console.log("excel:",excelMap)
-    let checkResult = checker(excelMap,configObj)
-    let outputObj = output(checkResult, configObj);
-    console.log("chexcel:", outputObj);
-    return new Promise(function(resolve,reject){
-      resolve(outputObj);
-    });
-  }).catch(err=>{
-    console.log(err)
-  })
+
+  this.verify = function (file, configObj) {
+    return getter(file)
+      .then((jsonMap) => {
+        let excelMap = jsonMap;
+        // console.log("excel:",excelMap)
+        let checkResult = checker(excelMap, configObj);
+        let outputObj = output(checkResult, configObj);
+        return new Promise(function (resolve, reject) {
+          resolve({
+            data: checkResult,
+            defaultTips: outputObj,
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 }
 
-chexcel.setTips = function (tips) {
+Chexcel.prototype.setTips = function (tips) {
   if (window) {
-    window._chexcelTips = { ...tips };
+    window.__chexcelTips__ = { ...tips };
   } else {
-    globalThis._chexcelTips = { ...tips };
+    globalThis.__chexcelTips__ = { ...tips };
   }
 };
 
-chexcel.setFormat = function (format) {
+Chexcel.prototype.setFormat = function (format) {
   if (window) {
-    window._chexcelFormat = { ...format };
+    window.__chexcelFormat__ = { ...format };
   } else {
-    globalThis._chexcelFormat = { ...format };
+    globalThis.__chexcelFormat__ = { ...format };
   }
 };
 
@@ -66,11 +74,12 @@ chexcel.setFormat = function (format) {
  */
 (function () {
   if (window) {
-    window.chexcel = chexcel;
+    window.chexcel = new Chexcel(file, configObj);
   } else {
-    globalThis.chexcel = chexcel;
+    globalThis.chexcel = new Chexcel(file, configObj);
   }
 })();
 
+let chexcel = new Chexcel(file, configObj);
 
 export default chexcel;

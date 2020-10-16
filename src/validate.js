@@ -1,19 +1,25 @@
 const validate = {
-  tips: {},
-  defaultFormat: {},
-  init(){
+  defaultFormat: {
+    number: /^[0-9]+$/,
+    email: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+    tel: /^1[3456789]\d{9}$/,
+    url: /^[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9]+\.[A-Za-z0-9-_%&\?\/=]+$/,
+  },
+  init() {
     this.getFormat();
   },
-  getFormat(){
-    if (window._chexcelFormat) {
-      this.defaultFormat = window._chexcelFormat;
-    } else if (globalThis._chexcelFormat) {
-      this.defaultFormat = globalThis._chexcelFormat;
-    } else {
-      this.defaultFormat = {
-        // TODO: 增加默认 format 正则
-        number: /^[0-9]+$/,
-      };
+  getFormat() {
+    if (window.__chexcelFormat__) {
+      this.defaultFormat = Object.assign(
+        this.defaultFormat,
+        window.__chexcelFormat__
+      );
+    }
+    if (globalThis.__chexcelFormat__) {
+      this.defaultFormat = Object.assign(
+        this.defaultFormat,
+        globalThis.__chexcelFormat__
+      );
     }
   },
   validator(cell, rule) {
@@ -55,7 +61,7 @@ const validate = {
         `There is no value in the include array of the ${column} validation rule`
       );
     }
-    return rule.include(cell);
+    return rule.includes(cell);
   },
   pattern(cell, rule) {
     if (rule.constructor !== RegExp) {
@@ -77,7 +83,7 @@ const validate = {
     }
   },
   length(cell, rule) {
-    if(typeof rule !== 'number'){
+    if (typeof rule !== "number") {
       throw new Error(
         `The length attribute configuration of the validation rule of ${column} is not a number`
       );
@@ -108,8 +114,8 @@ const validate = {
     }
     if (/^[0-9]+$/.test(cell)) {
       return Number(cell) >= rule;
-    }else{
-      return true
+    } else {
+      return true;
     }
   },
   max(cell, rule) {
@@ -120,6 +126,18 @@ const validate = {
     }
     if (/^[0-9]+$/.test(cell)) {
       return Number(cell) <= rule;
+    } else {
+      return true;
+    }
+  },
+  norepeat(cell, repeatObj, column) {
+    if (repeatObj[column]) {
+      if (repeatObj[column].has(cell)) {
+        return false;
+      } else {
+        repeatObj[column].set(cell, 1);
+        return true;
+      }
     } else {
       return true;
     }
