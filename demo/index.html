@@ -11,19 +11,23 @@
       background-color: #f1f1f1;
       border-left: 6px solid #02b5af;
     }
+    .line-box{
+      padding: 0;
+      margin: 0;
+      margin-bottom: 8px;
+    }
     p{
       background-color: #effffa;
       padding: 4px;
+      margin: 0;
     }
-    p .line{
+    p.line{
       color: #02b5af;
       margin-right: 16px;
     }
-    p .tip{
-      color: #f40
-    }
-    p .tip::before{
-      content:"Error : "
+    p.tip{
+      color: #f40;
+      padding-left: 20px
     }
   </style>
 </head>
@@ -34,23 +38,24 @@
   <h2>校验结果</h2>
   <div id="tips" class="tips"> </div>
   <script src="./js/checkConfig.js"></script>
-  <!-- <script src="./js/chexcel.js"></script> -->
   <script src="./js/chexcel.js"></script>
+  <!-- <script src="../dist/chexcel.js"></script> -->
   <script>
     console.log(chexcel)
-    chexcel.setTips({
-      required: "****列为必传项****",
-      pattern: "****列正则验证不通过****",
-      minLength: "****列的长度不够****",
-      maxLength: "****列超出长度限制****",
-      length: "****列的长度不对****",
-      min: "****列小于接受的最小值****",
-      max: "****列超出接受的最大值****",
-      include: "****列的值不是****",
-      format: "****列format验证不通过****",
-      norepeat: "****列重复****"
-    })
-    // 用于configObj中的format
+    // chexcel.setTips({
+    //   required: "****列为必传项****",
+    //   pattern: "****列正则验证不通过****",
+    //   minLength: "****列的长度不够****",
+    //   maxLength: "****列超出长度限制****",
+    //   length: "****列的长度不对****",
+    //   min: "****列小于接受的最小值****",
+    //   max: "****列超出接受的最大值****",
+    //   include: "****列的值不是****",
+    //   format: "****列format验证不通过****",
+    //   norepeat: "****列重复****"
+    // })
+
+    // 用于configObj中的format 
     chexcel.setFormat({
       number: /^[0-9]+$/
     })
@@ -60,7 +65,7 @@
     ipt.onchange= function(e){
       chexcel.verify(ipt.files[0],configObj).then(res=>{
         console.log(res)
-        showResult(res.defaultTips)
+        showResult(res.output)
       })
     }
 
@@ -70,12 +75,29 @@
         let h3 = document.createElement("h3")
         h3.innerText=sheetName
         tipsDiv.appendChild(h3)
-        result[sheetName].forEach(line=>{
+        console.log(result[sheetName])
+        if(Array.isArray(result[sheetName])){
+          result[sheetName].forEach(line=>{
+            let div = document.createElement("div")
+            div.className = "line-box"
+            let pl = document.createElement("p")
+            pl.innerText = `line: ${line.line}`
+            pl.className = "line"
+            div.appendChild(pl)
+
+            line.tips.forEach(t=>{
+              let p = document.createElement("p")
+              p.innerText = `${t.column}：${t.tips}`
+              p.className = "tip"
+              div.appendChild(p)
+            })
+            tipsDiv.appendChild(div)
+          })
+        }else{
           let p = document.createElement("p")
-          // p.innerText = `line:${line.line} Error:${line.tips.join("，")}`
-          p.innerHTML = `<span class="line">line: ${line.line}</span> <span class="tip">${line.tips.join(" ，")}</span>`
+          p.innerHTML = `<span class="success">${result[sheetName]}</span>`
           tipsDiv.appendChild(p)
-        })
+        }
       })
     }
   </script>

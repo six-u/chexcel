@@ -4,85 +4,122 @@
  * Des: Output verification result
  */
 
+import chexcel from "./main";
+
 /**
  * 校验结果输出
- * @param {Object} checkResult 
+ * @param {Object} checkResult
  * @param {Object} configObj 
  */
 function output(checkResult, configObj) {
   // console.log(checkResult);
-  //init
-  let baseTips = {};
-  getTips();
 
-  let outputObj = {};
+  let baseTips = getTips();
+
+  let outputData = {},
+    errorData = {};
+
   let sheetNames = Object.keys(checkResult);
+
   sheetNames.forEach((sheetName) => {
-    outputObj[sheetName]  = []
+    outputData[sheetName] = []
+    errorData[sheetName] = []
+
     checkResult[sheetName].forEach((row, index) => {
-      let temp = getRowTip(row, sheetName);
-      if(temp.length!=0){
+      let [temp, info] = getRowTip(row, sheetName);
+      if (temp.length != 0) {
         let outputLine = {
           line: index + 2,
           tips: temp,
         };
-        outputObj[sheetName].push(outputLine);
+        outputData[sheetName].push(outputLine);
+      }
+      if (Object.keys(info).length != 0) {
+        errorData[sheetName].push(info);
       }
     });
+
+    if (outputData[sheetName].length == 0) {
+      outputData[sheetName] = "All Success";
+    }
   });
-  return outputObj;
+  
+  return [outputData, errorData];
 
   /**
    * 获取行校验信息
-   * @param {String} sheetName
    * @param {Object} row
+   * @param {String} sheetName
    */
   function getRowTip(row, sheetName) {
     // console.log("row:", row);
-    let rowTips = [];
+    let rowTips = [],
+      info = {};
     Object.keys(row).forEach((column) => {
-      let temp = []
+      let temp = "",
+        infoItem = [];
+      // 自定义校验
       if (row[column].isValidator) {
-        temp = getColunmTip(row[column].validateResult, sheetName, column);
+        [temp, infoItem] = getColunmTip(
+          row[column].validateResult,
+          sheetName,
+          column
+        );
+        if (!infoItem) {
+          info[column] = row[column].validateResult;
+        }
       } else {
-        temp = getColunmTip(row[column], sheetName, column);
+        [temp, infoItem] = getColunmTip(row[column], sheetName, column);
+        if (!infoItem) {
+          info[column] = row[column];
+        }
       }
-      if(Array.isArray(temp)){
-        rowTips = rowTips.concat(temp);
+
+      if (typeof temp == "string") {
+        rowTips.push({ column: column, tips: temp });
       }
     });
-    // console.log("rowTips:",rowTips);
-    return rowTips;
+    return [rowTips, info];
   }
 
   /**
    * 获取单元格校验信息
-   * @param {Object} columnCheck 
-   * @param {String} sheetName 
-   * @param {String} column 
+   * @param {Object} columnCheck
+   * @param {String} sheetName
+   * @param {String} column
    */
   function getColunmTip(columnCheck, sheetName, column) {
-    // console.log(columnCheck, sheetName, column, line);
-    if (Object.values(columnCheck).every((v) => v)) {
-      return true;
+    // console.log(columnCheck);
+    let checkObj = { ...columnCheck };
+    delete checkObj.tips;
+    if (Object.values(checkObj).every((v) => v)) {
+      return [true, true];
     } else {
-      let columnTips = [];
-      Object.keys(columnCheck).forEach((rule) => {
-        if (columnCheck[rule] === false) {
-          let str = "";
-          if (rule != "include") {
-            str = column + baseTips[rule];
-          } else {
-            str =
-              column +
-              baseTips[rule] + "< " +
-              configObj[sheetName][column][rule].join(", ")+" >";
+      if (columnCheck.tips) {
+        return [columnCheck.tips, false];
+      } else {
+        let keys = Object.keys(checkObj),
+          len = keys.length,
+          i = 0;
+        let tips = "";
+        while (i < len) {
+          let rule = keys[i];
+          if (columnCheck[rule] === false) {
+            if (rule != "include") {
+              tips = baseTips[rule];
+            } else {
+              tips =
+                baseTips[rule] +
+                "< " +
+                configObj[sheetName][column][rule].join(", ") +
+                " >";
+            }
+            break;
           }
-          columnTips.push(str);
+          i++
         }
-      });
-      // console.log(columnTips);
-      return columnTips;
+        return [tips, false];
+      }
     }
   }
 
@@ -90,26 +127,27 @@ function output(checkResult, configObj) {
    * 获取错误提示信息
    */
   function getTips() {
+    let baseTips = {};
     if (window.__chexcelTips__) {
       baseTips = window.__chexcelTips__;
     } else if (globalThis.__chexcelTips__) {
       baseTips = globalThis.__chexcelTips__;
     } else {
       baseTips = {
-        required: "列为必传项",
-        pattern: "列正则验证不通过",
-        minLength: "列的长度不够",
-        maxLength: "列超出长度限制",
-        length: "列的长度不对",
-        min: "列小于接受的最小值",
-        max: "列超出接受的最大值",
-        include: "列的值没有包含在",
-        format: "列format验证不通过",
-        norepeat: "列重复",
+        required: "必填",
+        pattern: "正则验证不通过",
+        minLength: "长度不够",
+        maxLength: "超出长度限制",
+        length: "长度不对",
+        min: "小于接受的最小值",
+        max: "超出接受的最大值",
+        include: "值没有包含在",
+        format: "format验证不通过",
+        norepeat: "重复数据",
       };
     }
+    return baseTips;
   }
-
 }
 
 

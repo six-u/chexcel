@@ -1,12 +1,13 @@
 // const EncodingPlugin = require('webpack-encoding-plugin');
 const path = require('path');
+const webpack = require("webpack"); 
 
 module.exports = {
   //配置项
   entry: "./src/main.js",
   output: {
     filename: "chexcel.js",
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, "dist"),
   },
   // devServer: {
   //   contentBase: path.join(__dirname, 'dist'),
@@ -16,17 +17,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, 
-        use: { // 使用到的loader
-          loader: 'babel-loader', 
-          options: { 
+        test: /\.js$/,
+        use: {
+          // 使用到的loader
+          loader: "babel-loader",
+          options: {
             presets: [],
-            plugins: [
-              '@babel/plugin-transform-runtime'
-            ]
-          }
-        }
-      }
-    ]
-  }
+            plugins: ["@babel/plugin-transform-runtime"],
+          },
+        },
+      },
+    ],
+  },
+  optimization: {
+    minimize: true,
+  },
 };
+
+

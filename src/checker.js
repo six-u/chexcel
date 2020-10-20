@@ -8,16 +8,18 @@ import validate from "./validate";
 /**
  * 根据配置校验数据
  * @param {Map} excelMap 
- * @param {Object} configObj 
+ * @param {Object} rules 
  */
-function checker(excelMap,configObj){
-  // console.log("configObj:", configObj);
+function checker(excelMap,rules){
+  // console.log("rules:", rules);
 
   let checkResult = {};
   for (let [sheetName, sheet] of excelMap){
     // console.log(sheetName, sheet);
-    // console.log("configObj[" + sheetName + "]:", configObj[sheetName]);
-    checkResult[sheetName] = checkSheet(sheetName, sheet, configObj[sheetName]);
+    // console.log("rules[" + sheetName + "]:", rules[sheetName]);
+    if(rules[sheetName]){
+      checkResult[sheetName] = checkSheet(sheet, rules[sheetName]);
+    }
   }
   // console.log("checkResult:", checkResult);
   return checkResult
@@ -28,7 +30,7 @@ function checker(excelMap,configObj){
  * @param {Array} sheet 
  * @param {Object} rules 
  */
-function checkSheet(sheetName, sheet, rules) {
+function checkSheet(sheet, rules) {
   // 查重暂存数据
   let repeatObj = {};
   Object.keys(rules).forEach((key) => {
@@ -73,8 +75,8 @@ function checkRow(row, rules, repeatObj) {
  * @param {Object} rule 
  */
 function checkCell(column, cell, rule, repeatObj) {
-  // console.log("column:", column, "cell:", cell, "rule:", rule, "repeatObj:", repeatObj);
-
+  // console.log("rule:", rule);
+  
   let validateResult = {
     validator: true,
     required: true,
@@ -89,21 +91,25 @@ function checkCell(column, cell, rule, repeatObj) {
     norepeat: true,
   };
 
+  if (!rule) {
+    return validateResult;
+  }
+
   // 初始化校验信息
   validate.init();
-
-  // 查重
-  if (rule.norepeat) {
-    validateResult.norepeat = validate.norepeat(cell, repeatObj, column);
-    if (!validateResult.norepeat) {
-      return validateResult;
+    if (rule.norepeat) {
+      // 查重
+      validateResult.norepeat = validate.norepeat(cell, repeatObj, column);
+      if (!validateResult.norepeat) {
+        validateResult.tips = rule.tips
+        return validateResult;
+      }
     }
-  }
-  
   // 存在自定义校验方法则单独处理，传入cell值，需返回validateResult对象
   // TODO: 引入类型系统，使用typescript或者Flow
   if (rule.validator) {
     let resultObj = validate.validator(cell, rule.validator);
+      resultObj.tips = rule.tips
     return { isValidator: true, validateResult: resultObj };
   }
   
@@ -119,15 +125,34 @@ function checkCell(column, cell, rule, repeatObj) {
     "min",
     "max",
   ];
-  keys.forEach((key) => {
+  let skipPattern = false, skipLength = false
+
+  for(let i=0,len=keys.length;i<len;i++){
+    let key = keys[i]
     if (rule[key]) {
+      if (key == "format" && skipPattern) {
+        continue
+      }
+      if ((key == "minLength" || key == "maxLength") && skipLength){
+        continue
+      }
+      
       validateResult[key] = validate[key](cell, rule[key]);
-      if (!validateResult[key]) {
+
+      if (!validateResult[key] || key == "include") {
+        validateResult.tips = rule.tips;
         return validateResult;
       }
-    }
-  });
 
+      if (key == "pattern") {
+        skipPattern = true;
+      }
+      if( key == "length"){
+        skipLength = true
+      }
+    }
+  }
+  validateResult.tips = rule.tips;
   return validateResult;
 }
 
