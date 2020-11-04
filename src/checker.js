@@ -12,15 +12,17 @@ import validate from "./validate";
  */
 function checker(excelMap,rules){
   // console.log("rules:", rules);
-
   let checkResult = {};
-  for (let [sheetName, sheet] of excelMap){
-    // console.log(sheetName, sheet);
-    // console.log("rules[" + sheetName + "]:", rules[sheetName]);
-    if(rules[sheetName]){
-      checkResult[sheetName] = checkSheet(sheet, rules[sheetName]);
+  Object.keys(rules).forEach(sheetName=>{
+    if (excelMap.has(sheetName) && excelMap.get(sheetName).length>0) {
+      checkResult[sheetName] = checkSheet(
+        excelMap.get(sheetName),
+        rules[sheetName]
+      );
+    } else {
+      checkResult[sheetName] = "no data";
     }
-  }
+  })
   // console.log("checkResult:", checkResult);
   return checkResult
 }
@@ -56,14 +58,16 @@ function checkRow(row, rules, repeatObj) {
   // console.log("checkRow:", row, rules);
 
   let resultList = {};
-  Object.keys(row).forEach((column) => {
-    resultList[column.trim()] = checkCell(
-      column.trim(), // 列名
-      row[column.trim()], // 单元格数据
-      rules[column.trim()], // 单元格校验规则
+
+  Object.keys(rules).forEach(rule=>{
+    resultList[rule.trim()] = checkCell(
+      rule.trim(), // 列名
+      row[rule.trim()], // 单元格数据
+      rules[rule.trim()], // 单元格校验规则
       repeatObj // 查重Map
     );
   });
+
   // console.log("repeatObj:", repeatObj);
   // console.log("checkRowResult:", resultList);
   return resultList;
@@ -128,15 +132,23 @@ function checkCell(column, cell, rule, repeatObj) {
   let skipPattern = false, skipLength = false
 
   for(let i=0,len=keys.length;i<len;i++){
-    let key = keys[i]
+    let key = keys[i];
+    // 若非必填，且值为空，不再执行其他校验
+    if (
+      key == "required" &&
+      !rule[key] &&
+      (cell == "" || cell == undefined || cell == null)
+    ) {
+      return validateResult;
+    }
     if (rule[key]) {
       if (key == "format" && skipPattern) {
-        continue
+        continue;
       }
-      if ((key == "minLength" || key == "maxLength") && skipLength){
-        continue
+      if ((key == "minLength" || key == "maxLength") && skipLength) {
+        continue;
       }
-      
+
       validateResult[key] = validate[key](cell, rule[key]);
 
       if (!validateResult[key] || key == "include") {
@@ -147,8 +159,8 @@ function checkCell(column, cell, rule, repeatObj) {
       if (key == "pattern") {
         skipPattern = true;
       }
-      if( key == "length"){
-        skipLength = true
+      if (key == "length") {
+        skipLength = true;
       }
     }
   }

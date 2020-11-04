@@ -1,3 +1,9 @@
+/**
+ * Author: six-u
+ * Date: 2020/10/15
+ * Des: validate function
+ */
+
 const validate = {
   defaultFormat: {
     number: /^[0-9]+$/,
@@ -38,35 +44,52 @@ const validate = {
       rule(cell, validateResult);
       return validateResult;
     } else {
+      console.error(
+        `chexcel Error: The validator attribute of the verification rule of ${column} is not a function`
+      );
       throw new Error(
-        `The validator attribute of the verification rule of ${column} is not a function`
+        `chexcel Error: The validator attribute of the verification rule of ${column} is not a function`
       );
     }
   },
   required(cell, rule) {
+    console.log(cell, rule)
     if (rule) {
-      return cell == "" ? false : true;
+     return (cell == "" ||
+        cell == undefined ||
+        cell == null)
+        ? false
+        : true;
     } else {
       return true;
     }
   },
   include(cell, rule) {
     if (!Array.isArray(rule)) {
+      console.error(
+        `chexcel Error: The include attribute of the verification rule of ${column} is not an array`
+      );
       throw new Error(
-        `The include attribute of the verification rule of ${column} is not an array`
+        `chexcel Error: The include attribute of the verification rule of ${column} is not an array`
       );
     }
     if (!rule.length) {
+      console.error(
+        `chexcel Error: There is no value in the include array of the ${column} validation rule`
+      );
       throw new Error(
-        `There is no value in the include array of the ${column} validation rule`
+        `chexcel Error: There is no value in the include array of the ${column} validation rule`
       );
     }
     return rule.includes(cell);
   },
   pattern(cell, rule) {
     if (rule.constructor !== RegExp) {
+      console.error(
+        `chexcel Error: The pattern attribute of the validation rule of ${column} is not an instance of the RegExp object`
+      );
       throw new Error(
-        `The pattern attribute of the validation rule of ${column} is not an instance of the RegExp object`
+        `chexcel Error: The pattern attribute of the validation rule of ${column} is not an instance of the RegExp object`
       );
     }
     return rule.test(cell);
@@ -75,8 +98,13 @@ const validate = {
     if (this.defaultFormat[rule]) {
       return this.defaultFormat[rule].test(cell);
     } else {
+      console.error(
+        `chexcel Error: The format attribute configuration of the validation rule of ${column} failed, it can only be one of ${Object.keys(
+          this.defaultFormat
+        ).join(",")}`
+      );
       throw new Error(
-        `The format attribute configuration of the validation rule of ${column} failed, it can only be one of ${Object.keys(
+        `chexcel Error: The format attribute configuration of the validation rule of ${column} failed, it can only be one of ${Object.keys(
           this.defaultFormat
         ).join(",")}`
       );
@@ -84,32 +112,44 @@ const validate = {
   },
   length(cell, rule) {
     if (typeof rule !== "number") {
+      console.error(
+        `chexcel Error: The length attribute configuration of the validation rule of ${column} is not a number`
+      );
       throw new Error(
-        `The length attribute configuration of the validation rule of ${column} is not a number`
+        `chexcel Error: The length attribute configuration of the validation rule of ${column} is not a number`
       );
     }
     return (cell + "").length === rule;
   },
   minLength(cell, rule) {
     if (typeof rule !== "number") {
+      console.error(
+        `chexcel Error: The minLength attribute configuration of the validation rule of ${column} is not a number`
+      );
       throw new Error(
-        `The minLength attribute configuration of the validation rule of ${column} is not a number`
+        `chexcel Error: The minLength attribute configuration of the validation rule of ${column} is not a number`
       );
     }
     return (cell + "").length >= rule;
   },
   maxLength(cell, rule) {
     if (typeof rule !== "number") {
+      console.error(
+        `chexcel Error: The maxLength attribute configuration of the validation rule of ${column} is not a number`
+      );
       throw new Error(
-        `The maxLength attribute configuration of the validation rule of ${column} is not a number`
+        `chexcel Error: The maxLength attribute configuration of the validation rule of ${column} is not a number`
       );
     }
     return (cell + "").length <= rule;
   },
   min(cell, rule) {
     if (typeof rule !== "number") {
+      console.error(
+        `chexcel Error: The min attribute configuration of the validation rule of ${column} is not a number`
+      );
       throw new Error(
-        `The min attribute configuration of the validation rule of ${column} is not a number`
+        `chexcel Error: The min attribute configuration of the validation rule of ${column} is not a number`
       );
     }
     if (/^[0-9]+$/.test(cell)) {
@@ -120,8 +160,11 @@ const validate = {
   },
   max(cell, rule) {
     if (typeof rule !== "number") {
+      console.error(
+        `chexcel Error: The max attribute configuration of the validation rule of ${column} is not a number`
+      );
       throw new Error(
-        `The max attribute configuration of the validation rule of ${column} is not a number`
+        `chexcel Error: The max attribute configuration of the validation rule of ${column} is not a number`
       );
     }
     if (/^[0-9]+$/.test(cell)) {

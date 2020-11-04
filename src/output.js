@@ -22,23 +22,29 @@ function output(checkResult, configObj) {
   let sheetNames = Object.keys(checkResult);
 
   sheetNames.forEach((sheetName) => {
-    outputData[sheetName] = []
+    
+    outputData[sheetName] = [];
     errorData[sheetName] = []
 
-    checkResult[sheetName].forEach((row, index) => {
-      let [temp, info] = getRowTip(row, sheetName);
-      if (temp.length != 0) {
-        let outputLine = {
-          line: index + 2,
-          tips: temp,
-        };
-        outputData[sheetName].push(outputLine);
-      }
-      if (Object.keys(info).length != 0) {
-        errorData[sheetName].push(info);
-      }
-    });
-
+    
+    if (typeof checkResult[sheetName] == "string") {
+      outputData[sheetName] = checkResult[sheetName];
+      errorData[sheetName] = checkResult[sheetName];
+    }else{
+      checkResult[sheetName].forEach((row, index) => {
+        let [temp, info] = getRowTip(row, sheetName);
+        if (temp.length != 0) {
+          let outputLine = {
+            line: index + 2,
+            tips: temp,
+          };
+          outputData[sheetName].push(outputLine);
+        }
+        if (Object.keys(info).length != 0) {
+          errorData[sheetName].push(info);
+        }
+      });
+    }
     if (outputData[sheetName].length == 0) {
       outputData[sheetName] = "All Success";
     }

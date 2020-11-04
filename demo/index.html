@@ -59,13 +59,20 @@
     chexcel.setFormat({
       number: /^[0-9]+$/
     })
-
     let ipt = document.getElementById('file');
     let tipsDiv = document.getElementById('tips');
     ipt.onchange= function(e){
-      chexcel.verify(ipt.files[0],configObj).then(res=>{
+      resetResult()
+      chexcel.verify(ipt.files[0] ,configObj).then(res=>{
         console.log(res)
-        showResult(res.output)
+        if(res.code==1){
+          showResult(res.output)
+        }else{
+          let div = document.createElement("div")
+          div.className = "line-box"
+          div.innerText = res.output
+          tipsDiv.appendChild(div)
+        }
       })
     }
 
@@ -99,6 +106,10 @@
           tipsDiv.appendChild(p)
         }
       })
+    }
+
+    function resetResult(){
+      tipsDiv.innerHTML = ""
     }
   </script>
 </body>

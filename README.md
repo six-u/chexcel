@@ -1,656 +1,99 @@
 # chexcel
 
 #### 介绍
-一个读取校验Excel文件单元格内容的JavaScript插件。
 
-chexcel函数需传入Excel文件以及文件对应的校验规则对象，详见demo/data/测试数据.xlsx，以及demo/js/checkConfig.js 文件。
+一个校验 Excel 文件单元格内容的 JavaScript 插件。
 
-chexcek函数返回一个校验结果对象，包含两个属性data和defaultTips，其中data为校验结果数据，其属性以sheet数组为单位，属性名为sheet表名。示例：
+chexcel 函数需传入 Excel 文件以及文件对应的校验规则对象，详见 demo/data/测试数据.xlsx，以及 demo/js/checkConfig.js 文件。
+
+chexcek 函数返回一个校验结果对象，包含三个属性 code、data 和 output，其中 data 为校验结果数据，其属性以 sheet 数组为单位，属性名为 sheet 表名。示例：
 
 ```javascript
+// 传入的数据列名与配置列不匹配
 {
-    "data": {
-        "Sheet1": [
+    code: -2,
+    data: "Table column names do not match",
+    output: "Table column names do not match",
+}
+// 传入的文件除列名外（第二行开始）没有数据
+{
+    code: -1
+    data: "no data"
+    output: "no data"
+}
+// 校验通过
+{
+    code: 0
+    data: "All success"
+    output: "All success"
+}
+// 校验不通过
+{
+    code: 1
+    data:{
+        Sheet1:[
             {
-                "库位号": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": false,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
+                层:{
+                    format: false
+                    include: true
+                    length: true
+                    max: true
+                    maxLength: true
+                    min: true
+                    minLength: true
+                    norepeat: true
+                    pattern: true
+                    required: true
+                    tips: undefined
+                    validator: true
                 }
             },
-            {
-                "库位号": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": false,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            },
-            {
-                "库位号": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": false,
-                    "format": true,
-                    "length": true,
-                    "minLength": false,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": false,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            },
-            {
-                "库位号": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": false
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            }
-        ],
-        "Sheet2": [
-            {
-                "库位号": {
-                    "isValidator": true,
-                    "validateResult": {
-                        "required": true,
-                        "include": true,
-                        "pattern": false,
-                        "format": true,
-                        "length": true,
-                        "minLength": true,
-                        "maxLength": true,
-                        "min": true,
-                        "max": true
-                    }
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            },
-            {
-                "库位号": {
-                    "isValidator": true,
-                    "validateResult": {
-                        "required": true,
-                        "include": true,
-                        "pattern": true,
-                        "format": true,
-                        "length": true,
-                        "minLength": true,
-                        "maxLength": true,
-                        "min": true,
-                        "max": true
-                    }
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": false,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            },
-            {
-                "库位号": {
-                    "isValidator": true,
-                    "validateResult": {
-                        "required": true,
-                        "include": true,
-                        "pattern": true,
-                        "format": true,
-                        "length": true,
-                        "minLength": true,
-                        "maxLength": true,
-                        "min": true,
-                        "max": true
-                    }
-                },
-                "区域": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "通道": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "组": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "层": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": false,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                },
-                "状态": {
-                    "validator": true,
-                    "required": true,
-                    "include": true,
-                    "pattern": true,
-                    "format": true,
-                    "length": true,
-                    "minLength": true,
-                    "maxLength": true,
-                    "min": true,
-                    "max": true,
-                    "norepeat": true
-                }
-            }
+            // ...
         ]
+        Sheet2:[]
     },
-    "defaultTips": {
-        "Sheet1": [
+    output:{
+        Sheet1:[
             {
-                "line": 2,
-                "tips": [
-                    "层****列format验证不通过****"
-                ]
-            },
-            {
-                "line": 3,
-                "tips": [
-                    "状态****列的值不是****< 启用, 停用 >"
-                ]
-            },
-            {
-                "line": 4,
-                "tips": [
-                    "库位号****列正则验证不通过****",
-                    "库位号****列的长度不够****",
-                    "状态****列的值不是****< 启用, 停用 >"
-                ]
-            },
-            {
-                "line": 5,
-                "tips": [
-                    "库位号****列重复****"
+                line: 2,
+                tips: [
+                    {
+                        column: "层",
+                        tips: "format验证不通过"
+                    }
                 ]
             }
+            // ...
         ],
-        "Sheet2": [
-            {
-                "line": 2,
-                "tips": [
-                    "库位号****列正则验证不通过****"
-                ]
-            },
-            {
-                "line": 3,
-                "tips": [
-                    "组****列的长度不对****"
-                ]
-            },
-            {
-                "line": 4,
-                "tips": [
-                    "层****列format验证不通过****"
-                ]
-            }
+        Sheet2: [
+            // ...
         ]
     }
 }
 ```
 
-
-
-#### NPM安装教程
+#### 项目运行
 
 1.  下载本库
 2.  运行 npm i 安装依赖
-3.  运行 npx webpack (需要全局webpack webpack-cli 环境)
-4.  生成 chexcel.js 文件 引入index.html 即可
+3.  运行 npx webpack (需要全局 webpack webpack-cli 环境)
+4.  生成 chexcel.js 文件 引入 index.html 即可
 
-#### Script教程
+#### NPM 安装教程
 
-1. 下载demo/js/chexcel.js，使用<script>标签引入即可
+尚未上传 npm
+
+#### script 引入
+
+1. 下载 demo/js/chexcel.js，使用<script>标签引入即可
 
 #### 使用说明
 
-1. 通过chexcel.verify(file,config)调用函数
+1. 通过 chexcel.verify(file,config)调用函数
 
 2. chexcel.setTips(tips) 设置提示内容（开发中，未完善）
 
-3. chexcel.setFormat(formatList)设置format校验规则
+3. chexcel.setFormat(formatList)设置 format 校验规则
 
    config 示例：
 
@@ -661,8 +104,8 @@ chexcek函数返回一个校验结果对象，包含两个属性data和defaultTi
      Sheet1: {
        // column config
        库位号: {
-         required: true,    // Boolean 是否必填
-         pattern: /^[A-Z]{1,2}[0-9]+$/,  // RegExp 正则表达式
+         required: true, // Boolean 是否必填
+         pattern: /^[A-Z]{1,2}[0-9]+$/, // RegExp 正则表达式
          minLength: 5, // Number 字符最小长度
          maxLength: 20, // Number 字符最大长度
          length: undefined, // Number 限定字符长度
@@ -672,6 +115,7 @@ chexcek函数返回一个校验结果对象，包含两个属性data和defaultTi
          validator: undefined, // Function 自定义校验函数
          include: undefined, // Array 限定为给定值
          norepeat: true, // Boolean 是否开启列数据重复校验
+         tips: "库位号错误",
        },
        区域: {
          required: true,
@@ -685,9 +129,10 @@ chexcek函数返回一个校验结果对象，包含两个属性data和defaultTi
          validator: undefined,
          include: undefined,
          norepeat: undefined,
+         tips: "区域错误",
        },
-     }
-   }
+     },
+   };
    ```
 
    其余示例，可参看 [demo](/project/chexcel-demo/index.html)
@@ -701,5 +146,4 @@ chexcek函数返回一个校验结果对象，包含两个属性data和defaultTi
 
 ## 鸣谢
 
-感谢 [js-xlsx](https://github.com/protobi/js-xlsx) 及其开发者和其他所有贡献者，本函数读取Excel数据功能完全依赖于 [js-xlsx](https://github.com/protobi/js-xlsx) ，主要使用其read方法以及utils.sheet_to_json()方法。
-
+感谢 [js-xlsx](https://github.com/protobi/js-xlsx) 及其开发者和其他所有贡献者，本函数读取 Excel 数据功能完全依赖于 [js-xlsx](https://github.com/protobi/js-xlsx) ，主要使用其 read 方法以及 utils.sheet_to_json()方法。

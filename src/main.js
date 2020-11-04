@@ -8,6 +8,7 @@
  import getter from "./getter"
  import checker from "./checker"
  import output from "./output";
+ import params from "./params";
 
 /**
  * chexcel
@@ -20,24 +21,56 @@ function Chexcel(){
    * @param {Object} rules 
    */
   this.verify = function (file, rules) {
+    // 类型检查
+    params.init(file, rules);
+
     return getter(file)
-      .then((jsonMap) => {
-        let excelMap = jsonMap;
+      .then((excelMap) => {
+        // 空值检查
+        let isNull = params.isNull(excelMap, rules);
 
-        // console.log("excelMap:", excelMap);
-        // console.log("rules:", rules);
+        if (isNull === false) {
+          return new Promise(function (resolve, reject) {
+            resolve({
+              code: -1,
+              data: "no data",
+              output: "no data",
+            });
+          });
+        }
 
-        // TODO: 入参校验，
-        paramsCheck(excelMap, rules);
+        //文件列名是否正确检查，至少有一列在校验对象中存在
+        let flag = params.isFileCorrect(excelMap, rules);
 
+        console.log(flag);
+
+        if (!flag) {
+          return new Promise(function (resolve, reject) {
+            resolve({
+              code: -2,
+              data: "Table column names do not match",
+              output: "Table column names do not match",
+            });
+          });
+        }
+
+        // 校验内容
         let checkResult = checker(excelMap, rules);
-
         // console.log("checkResult:", checkResult);
 
         let [outputData, errorData] = output(checkResult);
-
+        if (Object.values(outputData).every((v) => v == "All Success")) {
+          return new Promise(function (resolve, reject) {
+            resolve({
+              code: 0,
+              data: errorData,
+              output: "All success",
+            });
+          });
+        }
         return new Promise(function (resolve, reject) {
           resolve({
+            code: 1,
             data: errorData,
             output: outputData,
           });
@@ -48,29 +81,6 @@ function Chexcel(){
       });
   };
 
-  function paramsCheck(excelMap, rules) {
-    let rst=[]
-    for (let [sheetName, sheet] of excelMap){
-      rst[0] = Object.keys(rules).includes(sheetName) ? true : false;
-      Object.keys(sheet[0]).forEach(column=>{
-        rst[2] = Object.keys(rules[sheetName]).includes(column) ? true : false;
-      });
-    }
-    Object.keys(rules).forEach(rule=>{
-      rst[1] = excelMap.has(rule)? true : false
-
-      Object.keys(rules[rule]).forEach((column) => {
-        rst[3] = Object.keys(excelMap.get(rule)[0]).includes(column) ? true : false;
-      });
-    })
-    // console.log(rst)
-    if(rst.every(v=>v)){
-      return true
-    }else{
-      throw new Error( `The Excel file column name does not match the configuration file field` );
-      return false
-    }
-  }
 }
 
 /**
@@ -111,6 +121,4 @@ Chexcel.prototype.setFormat = function (format) {
 
 var chexcel = new Chexcel();
 
-// export default chexcel ;
 export {chexcel};
-// module.exports = chexcel;

@@ -1,10 +1,5 @@
 
-
-
-
-
-
-	// function selectFile() {
+  // function selectFile() {
   //   document.getElementById("file").click();
   // }
 
