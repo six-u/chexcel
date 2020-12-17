@@ -15,16 +15,10 @@ const validate = {
     this.getFormat();
   },
   getFormat() {
-    if (window.__chexcelFormat__) {
+    if (window.chexcel.defaultFormat) {
       this.defaultFormat = Object.assign(
         this.defaultFormat,
-        window.__chexcelFormat__
-      );
-    }
-    if (globalThis.__chexcelFormat__) {
-      this.defaultFormat = Object.assign(
-        this.defaultFormat,
-        globalThis.__chexcelFormat__
+        window.chexcel.defaultFormat
       );
     }
   },

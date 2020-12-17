@@ -133,24 +133,21 @@ function output(checkResult, configObj) {
    * 获取错误提示信息
    */
   function getTips() {
-    let baseTips = {};
-    if (window.__chexcelTips__) {
-      baseTips = window.__chexcelTips__;
-    } else if (globalThis.__chexcelTips__) {
-      baseTips = globalThis.__chexcelTips__;
-    } else {
-      baseTips = {
-        required: "必填",
-        pattern: "正则验证不通过",
-        minLength: "长度不够",
-        maxLength: "超出长度限制",
-        length: "长度不对",
-        min: "小于接受的最小值",
-        max: "超出接受的最大值",
-        include: "值没有包含在",
-        format: "format验证不通过",
-        norepeat: "重复数据",
-      };
+    let baseTips = {
+      required: "必填",
+      pattern: "正则验证不通过",
+      minLength: "长度不够",
+      maxLength: "超出长度限制",
+      length: "长度不对",
+      min: "小于接受的最小值",
+      max: "超出接受的最大值",
+      include: "值没有包含在",
+      format: "format验证不通过",
+      norepeat: "重复数据",
+    };
+
+    if (window.chexcel.defaultTips) {
+      baseTips = Object.assign(baseTips, window.chexcel.defaultTips);
     }
     return baseTips;
   }

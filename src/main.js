@@ -88,11 +88,7 @@ function Chexcel(){
  * @param {Object} tips 
  */
 Chexcel.prototype.setTips = function (tips) {
-  if (window) {
-    window.__chexcelTips__ = { ...tips };
-  } else {
-    globalThis.__chexcelTips__ = { ...tips };
-  }
+  this.defaultTips = {...tips}
 };
 
 /**
@@ -100,11 +96,7 @@ Chexcel.prototype.setTips = function (tips) {
  * @param {Object} format 
  */
 Chexcel.prototype.setFormat = function (format) {
-  if (window) {
-    window.__chexcelFormat__ = { ...format };
-  } else {
-    globalThis.__chexcelFormat__ = { ...format };
-  }
+  this.defaultFormat = {...format}
 };
 
 
@@ -114,8 +106,6 @@ Chexcel.prototype.setFormat = function (format) {
 (function () {
   if (window) {
     window.chexcel = new Chexcel();
-  } else {
-    globalThis.chexcel = new Chexcel();
   }
 })();
 

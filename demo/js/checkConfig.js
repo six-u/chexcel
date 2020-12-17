@@ -16,7 +16,7 @@ let configObj = {
       // include: undefined,
       norepeat: true,
       tips:
-        "必填，接受5-20位字符，以1到2位大写字母开头后跟至少1位数字，且本列数据不可重复",
+        "(from config) 必填，接受5-20位字符，以1到2位大写字母开头后跟至少1位数字，且本列数据不可重复",
     },
     区域: {
       required: true,
@@ -30,7 +30,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受2-20位字符，以1到2位大写字母开头后跟至少0位数字",
+      tips: "(from config) 必填，接受2-20位字符，以1到2位大写字母开头后跟至少0位数字",
     },
     通道: {
       required: true,
@@ -44,7 +44,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受1-20位大写字母或数字",
+      tips: "(from config) 必填，接受1-20位大写字母或数字",
     },
     组: {
       required: true,
@@ -58,7 +58,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受1-20位大写字母或数字",
+      tips: "(from config) 必填，接受1-20位大写字母或数字",
     },
     层: {
       required: true,
@@ -86,7 +86,7 @@ let configObj = {
       // validator: undefined,
       include: ["启用", "停用"],
       // norepeat: undefined,
-      tips: "必填，只能填启用或停用",
+      tips: "(from config) 必填，只能填启用或停用",
     },
   },
   Sheet2: {
@@ -108,7 +108,7 @@ let configObj = {
       // include: undefined,
       // norepeat: undefined,
       tips:
-        "自定义校验覆盖其他校验，接受4-9位字符，以1到2位大写字母开头后跟至少3位数字",
+        "(from config) 自定义校验覆盖其他校验，接受4-9位字符，以1到2位大写字母开头后跟至少3位数字",
     },
     区域: {
       required: true,
@@ -122,7 +122,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受2-20位字符，以1到2位大写字母开头后跟至少0位数字",
+      tips: "(from config) 必填，接受2-20位字符，以1到2位大写字母开头后跟至少0位数字",
     },
     通道: {
       required: true,
@@ -136,7 +136,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受1-20位大写字母和数字",
+      tips: "(from config) 必填，接受1-20位大写字母和数字",
     },
     组: {
       required: true,
@@ -150,7 +150,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，接受大写字母和数字共2位字符",
+      // tips: "必填，接受大写字母和数字共2位字符",
     },
     层: {
       required: true,
@@ -164,7 +164,7 @@ let configObj = {
       // validator: undefined,
       // include: undefined,
       // norepeat: undefined,
-      tips: "必填，pattern优先级高于format，接受1-20位大写字母和数字",
+      tips: "(from config) 必填，pattern优先级高于format，接受1-20位大写字母和数字",
     },
     状态: {
       required: true,
@@ -178,7 +178,7 @@ let configObj = {
       // validator: undefined,
       include: ["启用", "停用"],
       // norepeat: undefined,
-      tips: "必填，include优先级高于minLength等长度验证，只能填启用或停用",
+      tips: "(from config) 必填，include优先级高于minLength等长度验证，只能填启用或停用",
     },
   },
 };

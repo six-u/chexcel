@@ -38,22 +38,22 @@
   <h2>校验结果</h2>
   <div id="tips" class="tips"> </div>
   <script src="./js/checkConfig.js"></script>
-  <script src="./js/chexcel.js"></script>
-  <!-- <script src="../dist/chexcel.js"></script> -->
+  <!-- <script src="./js/chexcel.js"></script> -->
+  <script src="../dist/chexcel.js"></script>
   <script>
     console.log(chexcel)
-    // chexcel.setTips({
-    //   required: "****列为必传项****",
-    //   pattern: "****列正则验证不通过****",
-    //   minLength: "****列的长度不够****",
-    //   maxLength: "****列超出长度限制****",
-    //   length: "****列的长度不对****",
-    //   min: "****列小于接受的最小值****",
-    //   max: "****列超出接受的最大值****",
-    //   include: "****列的值不是****",
-    //   format: "****列format验证不通过****",
-    //   norepeat: "****列重复****"
-    // })
+    chexcel.setTips ({
+      required: "(from setTips) 列为必传项****",
+      pattern: "(from setTips) 列正则验证不通过****",
+      minLength: "(from setTips) 列的长度不够****",
+      maxLength: "(from setTips) 列超出长度限制****",
+      // length: "(from setTips) 列的长度不对****",
+      min: "(from setTips) 列小于接受的最小值****",
+      max: "(from setTips) 列超出接受的最大值****",
+      include: "(from setTips) 列的值不是****",
+      format: "(from setTips) 列format验证不通过****",
+      norepeat: "(from setTips) 列重复****"
+    })
 
     // 用于configObj中的format 
     chexcel.setFormat({
