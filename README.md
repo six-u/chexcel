@@ -14,6 +14,10 @@ npx webpack --mode development // 开发环境
 
 # 使用
 
+## demo
+
+点击查看 [demo](https://six-u.gitee.io/project/chexcel-demo/index.html)，
+
 ## 引入
 
 直接引入打包生成的 js 文件，实例挂载在 window 上。
