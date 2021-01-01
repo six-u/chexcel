@@ -58,7 +58,7 @@ function Chexcel(){
         let checkResult = checker(excelMap, rules);
         // console.log("checkResult:", checkResult);
 
-        let [outputData, errorData] = output(checkResult);
+        let [outputData, errorData] = output(checkResult, rules);
         if (Object.values(outputData).every((v) => v == "All Success")) {
           return new Promise(function (resolve, reject) {
             resolve({

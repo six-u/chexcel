@@ -80,7 +80,8 @@ function checkRow(row, rules, repeatObj) {
  */
 function checkCell(column, cell, rule, repeatObj) {
   // console.log("rule:", rule);
-  
+  let newCell = typeof cell == 'string' ? cell.trim(): cell
+
   let validateResult = {
     validator: true,
     required: true,
@@ -103,7 +104,7 @@ function checkCell(column, cell, rule, repeatObj) {
   validate.init();
     if (rule.norepeat) {
       // 查重
-      validateResult.norepeat = validate.norepeat(cell, repeatObj, column);
+      validateResult.norepeat = validate.norepeat(newCell, repeatObj, column);
       if (!validateResult.norepeat) {
         validateResult.tips = rule.tips
         return validateResult;
@@ -112,7 +113,7 @@ function checkCell(column, cell, rule, repeatObj) {
   // 存在自定义校验方法则单独处理，传入cell值，需返回validateResult对象
   // TODO: 引入类型系统，使用typescript或者Flow
   if (rule.validator) {
-    let resultObj = validate.validator(cell, rule.validator);
+    let resultObj = validate.validator(newCell, rule.validator);
       resultObj.tips = rule.tips
     return { isValidator: true, validateResult: resultObj };
   }
@@ -137,7 +138,7 @@ function checkCell(column, cell, rule, repeatObj) {
     if (
       key == "required" &&
       !rule[key] &&
-      (cell == "" || cell == undefined || cell == null)
+      (newCell == "" || newCell == undefined || newCell == null)
     ) {
       return validateResult;
     }
@@ -149,7 +150,7 @@ function checkCell(column, cell, rule, repeatObj) {
         continue;
       }
 
-      validateResult[key] = validate[key](cell, rule[key]);
+      validateResult[key] = validate[key](newCell, rule[key]);
 
       if (!validateResult[key] || key == "include") {
         validateResult.tips = rule.tips;

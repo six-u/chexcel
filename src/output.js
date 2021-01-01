@@ -41,7 +41,10 @@ function output(checkResult, configObj) {
           outputData[sheetName].push(outputLine);
         }
         if (Object.keys(info).length != 0) {
-          errorData[sheetName].push(info);
+          errorData[sheetName].push({
+            line: index+2,
+            data: info
+          });
         }
       });
     }
@@ -134,16 +137,16 @@ function output(checkResult, configObj) {
    */
   function getTips() {
     let baseTips = {
-      required: "必填",
-      pattern: "正则验证不通过",
-      minLength: "长度不够",
-      maxLength: "超出长度限制",
-      length: "长度不对",
-      min: "小于接受的最小值",
-      max: "超出接受的最大值",
-      include: "值没有包含在",
-      format: "format验证不通过",
-      norepeat: "重复数据",
+      required: "(default)必填",
+      pattern: "(default)正则验证不通过",
+      minLength: "(default)长度不够",
+      maxLength: "(default)超出长度限制",
+      length: "(default)长度不对",
+      min: "(default)小于接受的最小值",
+      max: "(default)超出接受的最大值",
+      include: "(default)值没有包含在",
+      format: "(default)format验证不通过",
+      norepeat: "(default)重复数据",
     };
 
     if (window.chexcel.defaultTips) {
